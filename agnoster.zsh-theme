@@ -38,6 +38,7 @@ DETACHED="\u27a6"
 CROSS="\u2718"
 LIGHTNING="\u26a1"
 GEAR="\u2699"
+CHECKMARK="\u2713"
 
 # Begin a segment
 # Takes two arguments, background and foreground. Both can be omitted,
@@ -115,7 +116,7 @@ prompt_dir() {
 prompt_status() {
   local symbols
   symbols=()
-  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}$CROSS"
+  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}$CROSS" || symbols+="%{%F{green}%}$CHECKMARK"
   [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}$LIGHTNING"
   [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}$GEAR"
 
@@ -131,15 +132,21 @@ prompt_virtualenv() {
   fi
 }
 
+prompt_newline() {
+  print -n "\n"
+}
+
 ## Main prompt
 prompt_agnoster_main() {
   RETVAL=$?
   CURRENT_BG='NONE'
-  prompt_status
   prompt_context
   prompt_virtualenv
   prompt_dir
   prompt_git
+  prompt_end
+  prompt_newline
+  prompt_status
   prompt_end
 }
 
